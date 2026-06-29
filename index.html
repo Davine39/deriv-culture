@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deriv Tribe - Connect Across Borders</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1a1a3e 50%, #0d47a1 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .office-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+            border-left: 5px solid #06b6d4;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .office-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(6, 182, 212, 0.3);
+            border-left-color: #8b5cf6;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+        }
+
+        .flip-card {
+            background-size: cover;
+            background-position: center;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
+            }
+        }
+
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #06b6d4, #8b5cf6);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Office Data
+        const officesData = [
+            {
+                id: 1,
+                name: "Cyberjaya",
+                emoji: "🇲🇾",
+                country: "Malaysia",
+                culture: "Multicultural, inclusive, CSR-active",
+                traditions: ["Daily lunch announcements", "International Yoga Day", "Welcoming visiting teams"],
+                vibes: "Energetic, collaborative, tech-forward",
+                facts: ["Deriv's largest office", "Vanuatu team does annual trip here"],
+                lunchSpots: ["In-house canteen", "Foodpanda directory"],
+                goals: ["AI innovation", "Non-tech hackathon"],
+                hobbies: ["Yoga", "Wellness"]
+            },
+            {
+                id: 2,
+                name: "Malta",
+                emoji: "🇲🇹",
+                country: "Malta",
+                culture: "Compliance-focused, community-driven",
+                traditions: ["Coastal clean-ups", "World Cup celebrations"],
+                vibes: "Adventurous, outdoorsy",
+                facts: ["Removed 131.86 kg of waste", "5 year milestone with Cyprus"],
+                lunchSpots: ["Local Maltese restaurants", "Birkirkara area"],
+                goals: ["Regulatory excellence", "Talent growth"],
+                hobbies: ["Quad biking", "Yoga", "Boat trips"]
+            },
+            {
+                id: 3,
+                name: "Melaka",
+                emoji: "🇲🇾",
+                country: "Malaysia",
+                culture: "Warm, family-oriented, celebratory",
+                traditions: ["Eid Al-Fitr celebrations", "Mother's Day flower art", "Monthly wellness"],
+                vibes: "Warm, fun, full of laughter",
+                facts: ["Active in hackathons", "Zakat program"],
+                lunchSpots: ["Taman Kota Laksamana area"],
+                goals: ["Team wellness", "Food safety", "AI solutions"],
+                hobbies: ["Creative arts", "Flower arranging"]
+            },
+            {
+                id: 4,
+                name: "Ipoh",
+                emoji: "🇲🇾",
+                country: "Malaysia",
+                culture: "AI-curious, community-focused, growth-oriented",
+                traditions: ["Hari Raya celebrations", "Iftar dinners", "IWD sharing"],
+                vibes: "Inspiring, learning-driven",
+                facts: ["Recently renovated", "Hosted AI sessions"],
+                lunchSpots: ["Soho Ipoh 2", "Jalan Sultan Idris Shah"],
+                goals: ["AI upskilling", "Office refresh"],
+                hobbies: ["Quizzes", "Learning sessions"]
+            },
+            {
+                id: 5,
+                name: "Kigali",
+                emoji: "🇷🇼",
+                country: "Rwanda",
+                culture: "Resilient, passionate, community-rooted",
+                traditions: ["Kwibuka memorial visits", "Office lunches from local vendors"],
+                vibes: "Energy, passion, commitment",
+                facts: ["Starred for AI/CX innovation", "Built Slack bot integration"],
+                lunchSpots: ["Hi Pima restaurant"],
+                goals: ["Innovation", "CX excellence"],
+                hobbies: ["Office Cup", "Community events"]
+            },
+            {
+                id: 6,
+                name: "Dubai",
+                emoji: "🇦🇪",
+                country: "UAE",
+                culture: "Multicultural, fun-loving, event-rich",
+                traditions: ["Easter egg hunts", "Mango Fest"],
+                vibes: "Buzzing with energy",
+                facts: ["Celebrates 'King of Fruits'", "Infrastructure overhaul"],
+                lunchSpots: ["JLT area cafes"],
+                goals: ["Infrastructure", "Business growth"],
+                hobbies: ["Themed events", "Challenges"]
+            },
+            {
+                id: 7,
+                name: "Asunción",
+                emoji: "🇵🇾",
+                country: "Paraguay",
+                culture: "Latin warmth, festive, team-oriented",
+                traditions: ["Annual Summer Party", "Asado BBQ lunches", "IWD celebrations"],
+                vibes: "Fun, social, sporty",
+                facts: ["Famous for Asado lunches", "Paletto ice cream events"],
+                lunchSpots: ["Asado/BBQ spots", "Ice cream venues"],
+                goals: ["LATAM business growth", "Partner events"],
+                hobbies: ["Tennis", "Volleyball", "Pool"]
+            },
+            {
+                id: 8,
+                name: "Limassol/Nicosia",
+                emoji: "🇨🇾",
+                country: "Cyprus",
+                culture: "Milestone-celebrating, professional",
+                traditions: ["5-year celebration", "Cross-European trips"],
+                vibes: "Proud, established",
+                facts: ["Office turns 5 in 2026", "Milestone celebration"],
+                lunchSpots: ["Local Cypriot tavernas"],
+                goals: ["Regulatory compliance", "Growth"],
+                hobbies: ["Cross-office travel", "Celebrations"]
+            },
+            {
+                id: 9,
+                name: "Paris",
+                emoji: "🇫🇷",
+                country: "France",
+                culture: "Chic, collaborative, European",
+                traditions: ["Easter chocolate treats", "Joint European trips"],
+                vibes: "Social, well-connected",
+                facts: ["Prague trip with 4 EU offices"],
+                lunchSpots: ["Parisian cafés", "Bistros"],
+                goals: ["European market presence"],
+                hobbies: ["City exploration", "Team challenges"]
+            },
+            {
+                id: 10,
+                name: "Reading",
+                emoji: "🇬🇧",
+                country: "UK",
+                culture: "Casual, community-spirited, outdoorsy",
+                traditions: ["Monthly team lunches", "Outdoor picnics"],
+                vibes: "Laid-back, friendly",
+                facts: ["Prague trip with EU offices"],
+                lunchSpots: ["Gordon Ramsay's", "Apex Café"],
+                goals: ["Building UK presence"],
+                hobbies: ["Darts", "Outdoor picnics"]
+            },
+            {
+                id: 11,
+                name: "Minsk",
+                emoji: "🇧🇾",
+                country: "Belarus",
+                culture: "Traditional, artistic, warm",
+                traditions: ["Easter/Pascal celebration", "Hand-painted eggs"],
+                vibes: "Cozy, culturally rich",
+                facts: ["Gorgeous hand-painted eggs"],
+                lunchSpots: ["Local Minsk cuisine"],
+                goals: ["Tech/ops continuity"],
+                hobbies: ["Arts & crafts", "Cultural traditions"]
+            },
+            {
+                id: 12,
+                name: "Mauritius",
+                emoji: "🇲🇺",
+                country: "Mauritius",
+                culture: "Adventurous, close-knit",
+                traditions: ["First annual Réunion Island trip"],
+                vibes: "Tropical, travel-loving",
+                facts: ["Newest listed office", "Volcanic vistas"],
+                lunchSpots: ["Local Mauritius cuisine"],
+                goals: ["New office growth", "FSC expansion"],
+                hobbies: ["Travel", "Island exploration"]
+            },
+            {
+                id: 13,
+                name: "Dakar",
+                emoji: "🇸🇳",
+                country: "Senegal",
+                culture: "BPO-focused, fresh-graduate welcoming",
+                traditions: ["Entreprise Franche d'Exportation"],
+                vibes: "Professional, growth-oriented",
+                facts: ["Built for fintech careers"],
+                lunchSpots: ["Local Dakar cuisine"],
+                goals: ["CX & back-office excellence"],
+                hobbies: ["Career development"]
+            },
+            {
+                id: 14,
+                name: "Amman",
+                emoji: "🇯🇴",
+                country: "Jordan",
+                culture: "Multilingual, client-facing",
+                traditions: ["Arabic-language support"],
+                vibes: "Professional",
+                facts: ["MENA market support"],
+                lunchSpots: ["Local Jordanian cuisine"],
+                goals: ["MENA market support"],
+                hobbies: ["Cultural exchange"]
+            },
+            {
+                id: 15,
+                name: "Singapore",
+                emoji: "🇸🇬",
+                country: "Singapore",
+                culture: "Efficient, globally connected",
+                traditions: ["Annual trips"],
+                vibes: "Smart, professional",
+                facts: ["One of Asia's top fintech hubs"],
+                lunchSpots: ["Hawker centres"],
+                goals: ["APAC growth"],
+                hobbies: ["Global networking"]
+            },
+            {
+                id: 16,
+                name: "Vanuatu",
+                emoji: "🇻🇺",
+                country: "Vanuatu",
+                culture: "Remote, tight-knit, adventurous",
+                traditions: ["Annual trip to Cyberjaya"],
+                vibes: "Relaxed, Pacific island",
+                facts: ["Smallest office", "Annual Malaysia trip highlight"],
+                lunchSpots: ["Local Port Vila restaurants"],
+                goals: ["Compliance & operations"],
+                hobbies: ["Island life", "Travel"]
+            }
+        ];
+
+        // Pairing Questions
+        const pairingQuestions = [
+            "What's your biggest professional goal this year?",
+            "What's one skill you want to master?",
+            "What's your favorite part about working at Deriv?",
+            "Tell us something unique about your culture",
+            "What does work-life balance mean to you?",
+            "What's your favorite hobby outside work?",
+            "What's the best advice you've received?",
+            "What makes your office team special?",
+            "What's one thing you want to learn from another culture?",
+            "How do you recharge after work?",
+            "What's your ideal team environment?",
+            "What inspires you most at work?",
+            "Describe your perfect office day",
+            "What's a skill your office is known for?",
+            "How do you celebrate wins with your team?"
+        ];
+
+        const hobbies = ["Tech", "Sports", "Arts", "Travel", "Music", "Gaming", "Cooking", "Reading"];
+        const drinks = ["Coffee", "Tea", "Water", "Juice", "Smoothie", "Energy drink"];
+
+        // Main App
+        function DerrivTribe() {
+            const [page, setPage] = useState("home");
+            const [selectedOffice, setSelectedOffice] = useState(null);
+            const [pairingData, setPairingData] = useState([]);
+            const [currentPair, setCurrentPair] = useState(null);
+            const [compareOffices, setCompareOffices] = useState([null, null]);
+
+            const navigateTo = (newPage) => {
+                setPage(newPage);
+                window.scrollTo(0, 0);
+            };
+
+            // Navigation Bar
+            const NavBar = () => (
+                <nav className="glass fixed w-full top-0 z-50 border-b border-white/10">
+                    <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                        <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigateTo("home")}>
+                            <div className="text-3xl">🌍</div>
+                            <h1 className="gradient-text text-2xl font-bold">Deriv Tribe</h1>
+                        </div>
+                        <div className="flex gap-8 items-center">
+                            <button onClick={() => navigateTo("home")} className="nav-link text-white hover:text-cyan-400">Explore</button>
+                            <button onClick={() => navigateTo("compare")} className="nav-link text-white hover:text-purple-400">Compare</button>
+                            <button onClick={() => navigateTo("pair")} className="nav-link text-white hover:text-pink-400">Get Paired</button>
+                            <button onClick={() => navigateTo("leaderboard")} className="nav-link text-white hover:text-yellow-400">Tribe Stats</button>
+                        </div>
+                    </div>
+                </nav>
+            );
+
+            // Home Page
+            const HomePage = () => (
+                <div className="pt-24 pb-12">
+                    <div className="max-w-7xl mx-auto px-6">
+                        {/* Hero */}
+                        <div className="text-center mb-16 animate-fade-in">
+                            <h1 className="text-6xl font-bold text-white mb-4">
+                                One Company. <span className="gradient-text">16 Vibes.</span>
+                            </h1>
+                            <p className="text-xl text-cyan-200 mb-8">No boundaries. Real connections. Work that feels alive.</p>
+                            <div className="flex gap-4 justify-center">
+                                <button onClick={() => navigateTo("pair")} className="btn-primary px-8 py-3 rounded-lg font-bold">
+                                    🔗 Get Paired
+                                </button>
+                                <button onClick={() => navigateTo("compare")} className="btn-secondary px-8 py-3 rounded-lg font-bold">
+                                    🔍 Compare Offices
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Office Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {officesData.map(office => (
+                                <div
+                                    key={office.id}
+                                    onClick={() => setSelectedOffice(office)}
+                                    className="office-card p-6 rounded-xl shadow-lg cursor-pointer"
+                                >
+                                    <div className="text-5xl mb-3">{office.emoji}</div>
+                                    <h3 className="text-xl font-bold text-gray-900 mb-2">{office.name}</h3>
+                                    <p className="text-sm text-gray-600 mb-3">{office.country}</p>
+                                    <p className="text-xs text-cyan-600 font-semibold">{office.vibes}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Office Modal */}
+                    {selectedOffice && (
+                        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedOffice(null)}>
+                            <div className="glass max-w-2xl w-full rounded-2xl p-8 max-h-[90vh] overflow-y-auto">
+                                <div className="flex justify-between items-start mb-6">
+                                    <div>
+                                        <div className="text-5xl mb-3">{selectedOffice.emoji}</div>
+                                        <h2 className="text-4xl font-bold gradient-text">{selectedOffice.name}</h2>
+                                        <p className="text-gray-600">{selectedOffice.country}</p>
+                                    </div>
+                                    <button onClick={() => setSelectedOffice(null)} className="text-2xl text-gray-400 hover:text-gray-600">✕</button>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <h3 className="text-lg font-bold text-cyan-600 mb-2">🎯 Culture</h3>
+                                        <p className="text-gray-700">{selectedOffice.culture}</p>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-purple-600 mb-2">✨ Vibes</h3>
+                                        <p className="text-gray-700">{selectedOffice.vibes}</p>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-pink-600 mb-2">🎉 Traditions</h3>
+                                        <div className="flex flex-wrap gap-2">
+                                            {selectedOffice.traditions.map((t, i) => <span key={i} className="badge">{t}</span>)}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-yellow-600 mb-2">💡 Fun Facts</h3>
+                                        <ul className="list-disc list-inside text-gray-700">
+                                            {selectedOffice.facts.map((f, i) => <li key={i}>{f}</li>)}
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-green-600 mb-2">🎯 Team Goals</h3>
+                                        <div className="flex flex-wrap gap-2">
+                                            {selectedOffice.goals.map((g, i) => <span key={i} className="badge bg-gradient-to-r from-green-400 to-green-600">{g}</span>)}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-indigo-600 mb-2">🎨 Team Hobbies</h3>
+                                        <div className="flex flex-wrap gap-2">
+                                            {selectedOffice.hobbies.map((h, i) => <span key={i} className="badge bg-gradient-to-r from-indigo-400 to-indigo-600">{h}</span>)}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+
+            // Compare Page
+            const ComparePage = () => (
+                <div className="pt-24 pb-12">
+                    <div className="max-w-6xl mx-auto px-6">
+                        <h1 className="text-4xl font-bold text-white mb-8">🔗 Compare Offices</h1>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                            {[0, 1].map((idx) => (
+                                <div key={idx}>
+                                    <label className="text-white font-bold mb-3 block">Office {idx + 1}</label>
+                                    <select
+                                        value={compareOffices[idx]?.id || ""}
+                                        onChange={(e) => {
+                                            const office = officesData.find(o => o.id === parseInt(e.target.value));
+                                            const newCompare = [...compareOffices];
+                                            newCompare[idx] = office;
+                                            setCompareOffices(newCompare);
+                                        }}
+                                        className="w-full p-3 rounded-lg border-2 border-cyan-400 focus:outline-none text-gray-900 font-bold"
+                                    >
+                                        <option value="">Select an office</option>
+                                        {officesData.map(o => <option key={o.id} value={o.id}>{o.name}</option>)}
+                                    </select>
+                                </div>
+                            ))}
+                        </div>
+
+                        {compareOffices[0] && compareOffices[1] && (
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {/* Office 1 */}
+                                <div className="glass p-6 rounded-xl">
+                                    <div className="text-4xl mb-3">{compareOffices[0].emoji}</div>
+                                    <h2 className="text-2xl font-bold text-cyan-600 mb-4">{compareOffices[0].name}</h2>
+                                    <div className="space-y-2 text-sm text-gray-700">
+                                        <p><strong>Culture:</strong> {compareOffices[0].culture}</p>
+                                        <p><strong>Vibes:</strong> {compareOffices[0].vibes}</p>
+                                        <p><strong>Hobbies:</strong> {compareOffices[0].hobbies.join(", ")}</p>
+                                    </div>
+                                </div>
+
+                                {/* Comparison */}
+                                <div className="glass p-6 rounded-xl flex flex-col justify-center items-center text-center">
+                                    <h3 className="text-xl font-bold gradient-text mb-4">✨ Perfect Match Insights</h3>
+                                    <div className="space-y-3 text-sm text-gray-700">
+                                        <p className="bg-cyan-100 p-3 rounded-lg">Both teams value <strong>collaboration</strong> and <strong>community</strong></p>
+                                        <p className="bg-purple-100 p-3 rounded-lg">Great for <strong>cross-cultural projects</strong></p>
+                                        <p className="bg-pink-100 p-3 rounded-lg">Similar energy levels & <strong>team bonding style</strong></p>
+                                    </div>
+                                </div>
+
+                                {/* Office 2 */}
+                                <div className="glass p-6 rounded-xl">
+                                    <div className="text-4xl mb-3">{compareOffices[1].emoji}</div>
+                                    <h2 className="text-2xl font-bold text-purple-600 mb-4">{compareOffices[1].name}</h2>
+                                    <div className="space-y-2 text-sm text-gray-700">
+                                        <p><strong>Culture:</strong> {compareOffices[1].culture}</p>
+                                        <p><strong>Vibes:</strong> {compareOffices[1].vibes}</p>
+                                        <p><strong>Hobbies:</strong> {compareOffices[1].hobbies.join(", ")}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+
+            // Pairing Page
+            const PairingPage = () => {
+                const [showForm, setShowForm] = useState(true);
+                const [formData, setFormData] = useState({
+                    name: "",
+                    office: "",
+                    goal: "",
+                    hobbies: [],
+                    drink: ""
+                });
+
+                const handlePair = () => {
+                    if (!formData.office) {
+                        alert("Please select your office!");
+                        return;
+                    }
+
+                    // Generate random partner
+                    const randomOffice = officesData[Math.floor(Math.random() * officesData.length)];
+                    const partnerQuestion = pairingQuestions[Math.floor(Math.random() * pairingQuestions.length)];
+
+                    setCurrentPair({
+                        you: { ...formData, question: formData.goal || "Tell us your professional goal!" },
+                        partner: { name: "Fellow Tribesman", office: randomOffice.name, emoji: randomOffice.emoji, answer: "Excited to connect!" },
+                        question: partnerQuestion,
+                        matched: true
+                    });
+                    setShowForm(false);
+                };
+
+                if (showForm) {
+                    return (
+                        <div className="pt-24 pb-12">
+                            <div className="max-w-2xl mx-auto px-6">
+                                <h1 className="text-4xl font-bold text-white mb-8">🔗 Find Your Tribe Match</h1>
+                                <div className="glass p-8 rounded-xl">
+                                    <form className="space-y-6">
+                                        <div>
+                                            <label className="text-white font-bold block mb-2">Your Name <span className="text-gray-400">(optional)</span></label>
+                                            <input
+                                                type="text"
+                                                placeholder="Anonymous tribesman"
+                                                className="w-full p-3 rounded-lg border-2 border-cyan-400 focus:outline-none"
+                                                value={formData.name}
+                                                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="text-white font-bold block mb-2">Your Office *</label>
+                                            <select
+                                                className="w-full p-3 rounded-lg border-2 border-cyan-400 focus:outline-none text-gray-900 font-bold"
+                                                value={formData.office}
+                                                onChange={(e) => setFormData({...formData, office: e.target.value})}
+                                            >
+                                                <option value="">Select your office</option>
+                                                {officesData.map(o => <option key={o.id} value={o.name}>{o.emoji} {o.name}</option>)}
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label className="text-white font-bold block mb-2">Your Biggest Professional Goal</label>
+                                            <textarea
+                                                placeholder="E.g., Launch an AI feature, Learn new skills, etc."
+                                                className="w-full p-3 rounded-lg border-2 border-purple-400 focus:outline-none"
+                                                rows="3"
+                                                value={formData.goal}
+                                                onChange={(e) => setFormData({...formData, goal: e.target.value})}
+                                            ></textarea>
+                                        </div>
+
+                                        <div>
+                                            <label className="text-white font-bold block mb-2">Your Hobbies</label>
+                                            <div className="grid grid-cols-2 gap-3">
+                                                {hobbies.map(h => (
+                                                    <label key={h} className="flex items-center gap-2 text-white cursor-pointer">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={formData.hobbies.includes(h)}
+                                                            onChange={(e) => {
+                                                                if (e.target.checked) {
+                                                                    setFormData({...formData, hobbies: [...formData.hobbies, h]});
+                                                                } else {
+                                                                    setFormData({...formData, hobbies: formData.hobbies.filter(hob => hob !== h)});
+                                                                }
+                                                            }}
+                                                        />
+                                                        {h}
+                                                    </label>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="text-white font-bold block mb-2">Your Favorite Drink</label>
+                                            <select
+                                                className="w-full p-3 rounded-lg border-2 border-pink-400 focus:outline-none text-gray-900 font-bold"
+                                                value={formData.drink}
+                                                onChange={(e) => setFormData({...formData, drink: e.target.value})}
+                                            >
+                                                <option value="">Pick your drink</option>
+                                                {drinks.map(d => <option key={d} value={d}>{d}</option>)}
+                                            </select>
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={handlePair}
+                                            className="btn-primary w-full py-4 rounded-lg font-bold text-lg"
+                                        >
+                                            ✨ Get Paired Now
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }
+
+                return (
+                    <div className="pt-24 pb-12">
+                        <div className="max-w-4xl mx-auto px-6">
+                            <h1 className="text-4xl font-bold text-white mb-8">🎲 Your Perfect Match!</h1>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                                {/* You Card */}
+                                <div className="glass p-8 rounded-xl text-center pulse-glow">
+                                    <div className="text-6xl mb-4">👤</div>
+                                    <h2 className="text-2xl font-bold text-cyan-600 mb-2">
+                                        {formData.name || "You (Anonymous)"}
+                                    </h2>
+                                    <p className="text-lg text-gray-700 mb-4">{formData.office}</p>
+                                    <div className="bg-cyan-50 p-4 rounded-lg mb-4">
+                                        <p className="text-sm text-gray-600"><strong>Your Goal:</strong></p>
+                                        <p className="text-gray-900 font-semibold">{formData.goal || "Open to connections!"}</p>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2 justify-center">
+                                        {formData.hobbies.map(h => <span key={h} className="badge bg-gradient-to-r from-cyan-400 to-cyan-600">{h}</span>)}
+                                    </div>
+                                    <p className="text-sm text-gray-600 mt-4">☕ Drinks: <strong>{formData.drink}</strong></p>
+                                </div>
+
+                                {/* Partner Card */}
+                                <div className="glass p-8 rounded-xl text-center pulse-glow" style={{animationDelay: "0.5s"}}>
+                                    <div className="text-6xl mb-4">{currentPair.partner.emoji}</div>
+                                    <h2 className="text-2xl font-bold text-purple-600 mb-2">
+                                        Someone from {currentPair.partner.office}
+                                    </h2>
+                                    <p className="text-lg text-gray-700 mb-4">Ready to connect! 🌟</p>
+                                    <div className="bg-purple-50 p-4 rounded-lg mb-4">
+                                        <p className="text-sm text-gray-600"><strong>Conversation Starter:</strong></p>
+                                        <p className="text-gray-900 font-semibold italic">"{currentPair.question}"</p>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2 justify-center">
+                                        <span className="badge bg-gradient-to-r from-purple-400 to-purple-600">Ready to Chat</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-4 justify-center">
+                                <button
+                                    onClick={() => {
+                                        setShowForm(true);
+                                        setCurrentPair(null);
+                                    }}
+                                    className="btn-primary px-8 py-3 rounded-lg font-bold"
+                                >
+                                    🔄 Get Another Match
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        alert("💌 Connection started! Check Slack or reach out directly to continue the conversation!");
+                                    }}
+                                    className="btn-secondary px-8 py-3 rounded-lg font-bold"
+                                >
+                                    💬 Start Conversation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            // Leaderboard Page
+            const LeaderboardPage = () => (
+                <div className="pt-24 pb-12">
+                    <div className="max-w-4xl mx-auto px-6">
+                        <h1 className="text-4xl font-bold text-white mb-8">🏆 Tribe Stats</h1>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div className="glass p-6 rounded-xl text-center">
+                                <div className="text-4xl mb-2">🌍</div>
+                                <p className="text-gray-600 mb-2">Total Offices Connected</p>
+                                <p className="text-5xl font-bold gradient-text">16</p>
+                            </div>
+                            <div className="glass p-6 rounded-xl text-center">
+                                <div className="text-4xl mb-2">🤝</div>
+                                <p className="text-gray-600 mb-2">Active Pairings</p>
+                                <p className="text-5xl font-bold gradient-text">342</p>
+                            </div>
+                            <div className="glass p-6 rounded-xl text-center">
+                                <div className="text-4xl mb-2">✨</div>
+                                <p className="text-gray-600 mb-2">Conversations Started</p>
+                                <p className="text-5xl font-bold gradient-text">1,284</p>
+                            </div>
+                        </div>
+
+                        <div className="glass p-8 rounded-xl mb-8">
+                            <h2 className="text-2xl font-bold text-white mb-6">🌟 Most Active Offices</h2>
+                            <div className="space-y-4">
+                                {officesData.slice(0, 8).map((office, idx) => (
+                                    <div key={office.id} className="flex items-center justify-between p-4 bg-gradient-to-r from-cyan-50 to-purple-50 rounded-lg">
+                                        <div className="flex items-center gap-4">
+                                            <div className="text-3xl font-bold text-cyan-600 w-8">{idx + 1}</div>
+                                            <div>
+                                                <p className="text-lg font-bold text-gray-900">{office.emoji} {office.name}</p>
+                                                <p className="text-sm text-gray-600">{office.country}</p>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-2xl font-bold gradient-text">{Math.floor(Math.random() * 100) + 30}</p>
+                                            <p className="text-xs text-gray-600">connections</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="glass p-8 rounded-xl">
+                            <h2 className="text-2xl font-bold text-white mb-6">🎖️ Achievements Unlocked</h2>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                {[
+                                    { emoji: "🌈", name: "Rainbow Tribe", desc: "Connect with 5+ offices" },
+                                    { emoji: "🚀", name: "Fast Track", desc: "100 connections" },
+                                    { emoji: "🌍", name: "Global Citizen", desc: "Visit all 16 offices" },
+                                    { emoji: "💬", name: "Chatterbox", desc: "Start 50 conversations" },
+                                    { emoji: "❤️", name: "Community Hero", desc: "Help others connect" },
+                                    { emoji: "⭐", name: "Tribe Champion", desc: "Top 1% active" }
+                                ].map((badge, i) => (
+                                    <div key={i} className="bg-gradient-to-br from-yellow-100 to-orange-100 p-4 rounded-lg text-center">
+                                        <div className="text-4xl mb-2">{badge.emoji}</div>
+                                        <p className="font-bold text-gray-900 text-sm">{badge.name}</p>
+                                        <p className="text-xs text-gray-600">{badge.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            // Footer
+            const Footer = () => (
+                <div className="bg-black/50 border-t border-white/10 mt-12">
+                    <div className="max-w-7xl mx-auto px-6 py-8 text-center text-white">
+                        <p className="mb-2">🌍 <span className="gradient-text font-bold">Deriv Tribe</span> — Connecting 16 Offices, One Connection at a Time</p>
+                        <p className="text-sm text-gray-400">No boundaries. Real connections. Work that feels alive.</p>
+                    </div>
+                </div>
+            );
+
+            return (
+                <div>
+                    <NavBar />
+                    {page === "home" && <HomePage />}
+                    {page === "compare" && <ComparePage />}
+                    {page === "pair" && <PairingPage />}
+                    {page === "leaderboard" && <LeaderboardPage />}
+                    <Footer />
+                </div>
+            );
+        }
+
+        // Render
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<DerrivTribe />);
+    </script>
+</body>
+</html>
